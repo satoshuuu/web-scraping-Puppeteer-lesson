@@ -43,7 +43,43 @@ const runPuppeteer = async (pageUrl, titleSelector, materialSelector) => {
 
   const fileName = "result.json";
 
-  writeFile(fileName, originalData);
+  let obj = {
+    recipe: []
+  };
+
+  fs.exists(fileName, function (exists) {
+
+    if (exists) {
+
+      console.log("yes file exists");
+
+      fs.readFile(fileName, function readFileCallback(err, data) {
+
+        if (err) {
+          console.log(err);
+        } else {
+          obj = JSON.parse(data);
+
+          obj.recipe.push(originalData);
+
+          let json = JSON.stringify(obj);
+          fs.writeFile(fileName, json,(err)=>{
+            if (err) console.log(`error!::${err}`);
+          });
+        }
+      });
+    } else {
+
+      console.log("file not exists");
+
+      obj.recipe.push(originalData);
+
+      let json = JSON.stringify(obj);
+      fs.writeFile(fileName, json,(err)=>{
+        if(err) console.log(`error!::${err}`);
+      });
+    }
+  })
 };
 
 url = "スクレイピング先のURL";
